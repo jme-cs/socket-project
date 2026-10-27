@@ -2,22 +2,36 @@
 
 import socket
 
-ip = input("IP address: ").strip()
-
-port = int(input("Port: "))
-
-def client():
-
+def client(ip, port):
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     my_socket.connect((ip, port))
 
-    message = input("Enter a Message: ")
+    while True:
+        message = input("Enter a Message ('q' to Quit): ").strip()
 
-    my_socket.send(message.encode('utf-8'))
-    server_response = my_socket.recv(1024)
+        if message == "q":
+            break
+        if message == "":
+            print("Error: Message cannot be empty")
+            continue
 
-    print(server_response.decode('utf-8'))
+        my_socket.sendall(message.encode('utf-8'))
+        server_response = my_socket.recv(1024)
 
+        print(server_response.decode('utf-8'))
+
+    print("Closing socket...")
     my_socket.close()
 
-client()
+def main():
+    ip = input("Server IP Address: ").strip()
+    while True:
+        try:
+            port = int(input("Server Port: "))
+            break
+        except ValueError:
+            print("Error: Port must be an integer")
+
+    client(ip, port)
+
+main()
