@@ -13,17 +13,15 @@ def server():
     incoming_socket, incoming_address = my_socket.accept()
     print(f"Connected from: {incoming_address[0]} : {incoming_address[1]}")
 
-    while True:
-        data = incoming_socket.recv(1024).decode('utf-8')
-
-        if not data:
-            print("Client disconnected")
-            break
-
-        incoming_socket.sendall(data.upper().encode('utf-8'))
-
-    incoming_socket.close()
-    my_socket.close()
+    try:
+        while True:
+            data = incoming_socket.recv(1024).decode('utf-8')
+            if not data:
+                break
+            incoming_socket.sendall(data.upper().encode('utf-8'))
+    finally:
+        print("Client disconnected")
+        incoming_socket.close()
+        my_socket.close()
 
 server()
-#'b"hello"'
